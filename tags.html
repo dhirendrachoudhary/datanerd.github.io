@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tags - ML Blog</title>
+    <meta name="description" content="Browse posts by tags">
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1><a href="/">ML Blog</a></h1>
+            <nav>
+                <a href="/">Home</a>
+                <a href="about.html">About</a>
+                <a href="tags.html">Tags</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="tags-header">
+            <h1>Browse by Tags</h1>
+            <p>Click on a tag to see related posts</p>
+        </div>
+
+        <div class="tags-cloud" id="tagsCloud">
+            <!-- Tags will be populated by JavaScript -->
+        </div>
+
+        <div class="tagged-posts" id="taggedPosts">
+            <p style="text-align: center; color: #666;">Select a tag to view related posts</p>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 ML Blog. Built with ❤️ and deployed via GitHub Actions.</p>
+        </div>
+    </footer>
+
+    <script src="assets/js/tags.js"></script>
+</body>
+</html>
