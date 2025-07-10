@@ -1,5 +1,4 @@
-// Modern ML Blog JavaScript - Static Compatible Version
-import { gsap, ScrollTrigger } from "gsap/all"
+// Modern ML Blog JavaScript - Static Compatible Version (No Imports)
 
 class MLBlog {
   constructor() {
@@ -418,7 +417,10 @@ class MLBlog {
 
   setupAnimations() {
     // Check if GSAP is available
-    if (typeof gsap !== "undefined") {
+    const gsap = window.gsap
+    const ScrollTrigger = window.ScrollTrigger
+
+    if (gsap && ScrollTrigger) {
       // Register GSAP plugins
       gsap.registerPlugin(ScrollTrigger)
 
