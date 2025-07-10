@@ -589,3 +589,88 @@ const imageObserver = new IntersectionObserver((entries) => {
 document.querySelectorAll("img[data-src]").forEach((img) => {
   imageObserver.observe(img)
 })
+
+// Minimalist Blog Loader for Markdown Posts
+// Requires: marked.js (for markdown rendering)
+
+(async function() {
+  const tocList = document.getElementById('toc-list');
+  const postList = document.getElementById('post-list');
+  const postContent = document.getElementById('post-content');
+
+  // Helper: fetch all .md files in /posts (assumes static site generator or server exposes list)
+  async function fetchPostList() {
+    // For static hosting, maintain a posts.json or index file. Here, we hardcode for demo.
+    // In production, generate posts.json at build time listing all .md files.
+    return [
+      {
+        id: 'transformer-architecture-explained',
+        title: 'Understanding Transformer Architecture: From Attention to GPT',
+        date: '2024-01-15',
+        excerpt: 'Deep dive into the transformer architecture that revolutionized NLP and beyond. Learn about self-attention, positional encoding, and how these models work.',
+        file: 'posts/transformer-architecture-explained.md'
+      }
+      // Add more posts here or load from posts.json
+    ];
+  }
+
+  // Render sidebar TOC
+  function renderTOC(posts) {
+    tocList.innerHTML = posts.map(post => `<li><a href="#" data-id="${post.id}">${post.title}</a></li>`).join('');
+  }
+
+  // Render post list
+  function renderPostList(posts) {
+    postList.innerHTML = posts.map(post => `
+      <li>
+        <div class="post-title"><a href="#" data-id="${post.id}">${post.title}</a></div>
+        <div class="post-meta">${post.date}</div>
+        <div class="post-excerpt">${post.excerpt}</div>
+      </li>
+    `).join('');
+  }
+
+  // Load and render a markdown post
+  async function showPost(post) {
+    const res = await fetch(post.file);
+    const md = await res.text();
+    postContent.innerHTML = marked.parse(md);
+    postContent.style.display = '';
+    postList.style.display = 'none';
+    // Highlight in TOC
+    document.querySelectorAll('.toc-list a').forEach(a => a.classList.toggle('active', a.dataset.id === post.id));
+  }
+
+  // Show post list
+  function showPostList() {
+    postContent.style.display = 'none';
+    postList.style.display = '';
+    document.querySelectorAll('.toc-list a').forEach(a => a.classList.remove('active'));
+  }
+
+  // Main
+  const posts = await fetchPostList();
+  renderTOC(posts);
+  renderPostList(posts);
+
+  // Sidebar click
+  tocList.addEventListener('click', e => {
+    if (e.target.tagName === 'A') {
+      const post = posts.find(p => p.id === e.target.dataset.id);
+      if (post) showPost(post);
+      e.preventDefault();
+    }
+  });
+
+  // Post list click
+  postList.addEventListener('click', e => {
+    if (e.target.tagName === 'A') {
+      const post = posts.find(p => p.id === e.target.dataset.id);
+      if (post) showPost(post);
+      e.preventDefault();
+    }
+  });
+
+  // Clicking logo or outside returns to post list
+  document.querySelector('.sidebar h2').addEventListener('click', showPostList);
+})();
