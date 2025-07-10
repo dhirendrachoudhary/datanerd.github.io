@@ -10,31 +10,10 @@ class MLBlog {
   }
 
   async init() {
-    this.showLoadingSplash()
     await this.loadContent()
     this.setupEventListeners()
     this.setupAnimations()
     this.setupTypewriter()
-    this.hideLoadingSplash()
-  }
-
-  showLoadingSplash() {
-    const splash = document.getElementById("loading-splash")
-    if (splash) {
-      splash.classList.remove("hidden")
-    }
-  }
-
-  hideLoadingSplash() {
-    const splash = document.getElementById("loading-splash")
-    if (splash) {
-      setTimeout(() => {
-        splash.classList.add("hidden")
-        setTimeout(() => {
-          splash.style.display = "none"
-        }, 500)
-      }, 2000)
-    }
   }
 
   async loadContent() {
