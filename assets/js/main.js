@@ -1,6 +1,5 @@
-// Modern ML Blog JavaScript with GSAP animations
-import gsap from "gsap"
-import { ScrollTrigger } from "gsap/ScrollTrigger"
+// Modern ML Blog JavaScript - Static Compatible Version
+import { gsap, ScrollTrigger } from "gsap/all"
 
 class MLBlog {
   constructor() {
@@ -41,7 +40,6 @@ class MLBlog {
 
   async loadContent() {
     // Simulate loading posts from markdown files
-    // In a real implementation, this would fetch from a build-generated JSON
     this.posts = await this.generateSamplePosts()
     this.buildSearchIndex()
     this.updatePostCounts()
@@ -374,7 +372,6 @@ class MLBlog {
     text.textContent = "Load More Posts"
     loadMoreBtn.disabled = false
 
-    // In a real implementation, you would load more posts here
     console.log("Loading more posts...")
   }
 
@@ -420,66 +417,97 @@ class MLBlog {
   }
 
   setupAnimations() {
-    // Register GSAP plugins
-    gsap.registerPlugin(ScrollTrigger)
+    // Check if GSAP is available
+    if (typeof gsap !== "undefined") {
+      // Register GSAP plugins
+      gsap.registerPlugin(ScrollTrigger)
 
-    // Hero animations
-    gsap.from(".hero-text", {
-      duration: 1,
-      y: 50,
-      opacity: 0,
-      ease: "power3.out",
-      delay: 2.5,
-    })
+      // Hero animations
+      gsap.from(".hero-text", {
+        duration: 1,
+        y: 50,
+        opacity: 0,
+        ease: "power3.out",
+        delay: 2.5,
+      })
 
-    // Category cards animation
-    gsap.from(".category-card", {
-      duration: 0.8,
-      y: 30,
-      opacity: 0,
-      stagger: 0.1,
-      ease: "power2.out",
-      scrollTrigger: {
-        trigger: ".categories-grid",
-        start: "top 80%",
-      },
-    })
+      // Category cards animation
+      gsap.from(".category-card", {
+        duration: 0.8,
+        y: 30,
+        opacity: 0,
+        stagger: 0.1,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: ".categories-grid",
+          start: "top 80%",
+        },
+      })
 
-    // Post cards animation
-    gsap.from(".post-card", {
-      duration: 0.8,
-      y: 30,
-      opacity: 0,
-      stagger: 0.15,
-      ease: "power2.out",
-      scrollTrigger: {
-        trigger: ".posts-grid",
-        start: "top 80%",
-      },
-    })
+      // Post cards animation
+      gsap.from(".post-card", {
+        duration: 0.8,
+        y: 30,
+        opacity: 0,
+        stagger: 0.15,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: ".posts-grid",
+          start: "top 80%",
+        },
+      })
 
-    // Section titles animation
-    gsap.from(".section-title", {
-      duration: 1,
-      y: 30,
-      opacity: 0,
-      ease: "power2.out",
-      scrollTrigger: {
-        trigger: ".section-title",
-        start: "top 85%",
-      },
-    })
+      // Section titles animation
+      gsap.from(".section-title", {
+        duration: 1,
+        y: 30,
+        opacity: 0,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: ".section-title",
+          start: "top 85%",
+        },
+      })
 
-    // Parallax effect for hero background
-    gsap.to(".hero-particles", {
-      yPercent: -50,
-      ease: "none",
-      scrollTrigger: {
-        trigger: ".hero",
-        start: "top bottom",
-        end: "bottom top",
-        scrub: true,
-      },
+      // Parallax effect for hero background
+      gsap.to(".hero-particles", {
+        yPercent: -50,
+        ease: "none",
+        scrollTrigger: {
+          trigger: ".hero",
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true,
+        },
+      })
+    } else {
+      // Fallback animations using CSS
+      this.setupFallbackAnimations()
+    }
+  }
+
+  setupFallbackAnimations() {
+    // Simple fade-in animations without GSAP
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: "0px 0px -50px 0px",
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = "1"
+          entry.target.style.transform = "translateY(0)"
+        }
+      })
+    }, observerOptions)
+
+    // Observe elements for animation
+    document.querySelectorAll(".category-card, .post-card, .section-title").forEach((el) => {
+      el.style.opacity = "0"
+      el.style.transform = "translateY(30px)"
+      el.style.transition = "opacity 0.8s ease, transform 0.8s ease"
+      observer.observe(el)
     })
   }
 
@@ -547,7 +575,7 @@ function throttle(func, limit) {
   let inThrottle
   return function () {
     const args = arguments
-    
+
     if (!inThrottle) {
       func.apply(this, args)
       inThrottle = true
